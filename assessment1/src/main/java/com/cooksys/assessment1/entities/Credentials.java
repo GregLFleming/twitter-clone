@@ -1,10 +1,7 @@
 package com.cooksys.assessment1.entities;
 
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.GeneratedValue;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

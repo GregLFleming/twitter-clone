@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.springframework.context.annotation.Profile;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,6 +26,13 @@ public class User {
 	private java.sql.Timestamp joined;
 	
 	private boolean deleted = false;
+
+	@ManyToMany
+	private List<User> followers;
+
+	@ManyToMany
+	private List<User> following;
+
 	
 	@Embedded
 	private Profile profile;
