@@ -29,7 +29,7 @@ public class Hashtag {
 	private java.sql.Timestamp lastUsed;
 	
 	@Column(nullable = false)
-	@ManyToMany
+	@ManyToMany(mappedBy = "hashtags")
 	private List<Tweet> tweets;
 }
 

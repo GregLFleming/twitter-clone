@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -36,27 +37,28 @@ public class Tweet {
 	
 	private String content;
 	
-	
-	
 	@ManyToOne
-	@JoinColumn(name = "id_replied_to")
+	@JoinColumn(name = "in_reply_to")
 	private Tweet inReplyTo;
 	
+	@OneToMany(mappedBy = "inReplyTo")
+	private List<Tweet> replies;
+	
 	@ManyToOne
-	@JoinColumn(name = "id_of_repost")
+	@JoinColumn(name = "repost_of")
 	private Tweet repostOf;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "repostOf")
 	private List<Tweet> reposts;
 	
-	
 	@ManyToMany
-	private List<User> tweetsLiked;
+	@JoinTable(name = "tweet_hashtags", 
+			  joinColumns = @JoinColumn(name = "tweet_id"), 
+			  inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+	private List<Hashtag> hashtags;
 	
-
-
-	
-	
+//	@ManyToMany
+//	private List<User> tweetsLiked;
 	
 	
 
