@@ -1,16 +1,10 @@
 package com.cooksys.assessment1.entities;
 
-import org.hibernate.annotations.Where;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.annotation.Id;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+import org.springframework.context.annotation.Profile;
 
 @Entity
 @Data

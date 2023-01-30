@@ -1,13 +1,9 @@
 package com.cooksys.assessment1.entities;
 
-import java.util.List;
-
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +25,7 @@ public class Hashtag {
 	@Column(nullable = false)
 	private java.sql.Timestamp lastUsed;
 	
-	@Column(nullable = false)
+//	@Column(nullable = false)
 //	@ManyToMany
 //	private List<Tweet> tweets;
 }

@@ -1,23 +1,12 @@
 package com.cooksys.assessment1.entities;
 
-import java.util.List;
-
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Where;
-import org.springframework.data.annotation.Id;
-
-import com.cooksys.quiz_api.entities.Answer;
-import com.cooksys.quiz_api.entities.Question;
-import com.cooksys.quiz_api.entities.Quiz;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Data
@@ -33,7 +22,7 @@ public class Tweet {
 //	@ManyToOne
 //	@JoinColumn(name = "user_table_id")
 //	private User author;
-	
+
 	@Column(nullable = false)
 	private java.sql.Timestamp posted;
 	
