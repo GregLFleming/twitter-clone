@@ -1,16 +1,18 @@
 package com.cooksys.assessment1.entities;
 
+import java.util.List;
+
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-import org.hibernate.annotations.Where;
 
 @Entity
 @Data
@@ -22,10 +24,9 @@ public class Tweet {
 	@GeneratedValue
 	private Long id;
 	
-	
-//	@ManyToOne
+	@ManyToOne
 //	@JoinColumn(name = "user_table_id")
-//	private User author;
+	private User author;
 
 	@Column(nullable = false)
 	private java.sql.Timestamp posted;
@@ -34,20 +35,18 @@ public class Tweet {
 	
 	private String content;
 	
-	@Column(nullable = false)
+	@ManyToOne
+	private List<Tweet> inReplyTo;
+	
+	@OneToMany
+	private Tweet repostOf;
+	
+	
 	@ManyToMany
-	private List<Hashtag> hashtags;
+	private List<User> tweetsLiked;
 	
-	
-//	@OneToMany(mappedBy = "inReplyTo")
-//	private List<Tweet> replies;
-//	
-//	@Column(nullable = false)
-//	@ManyToOne
-//	@JoinColumn(name = "replies")
-//	private Tweet inReplyTo;
-	
-//	private Integer repostOf ????????????;
+
+
 	
 	
 	
