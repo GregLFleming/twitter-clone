@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -35,11 +36,18 @@ public class Tweet {
 	
 	private String content;
 	
+	
+	
 	@ManyToOne
-	private List<Tweet> inReplyTo;
+	@JoinColumn(name = "tweet_reply_id")
+	private Tweet inReplyTo;
+	
+	@ManyToOne
+	@JoinColumn(name = "tweet_repost_id")
+	private Tweet repostOf;
 	
 	@OneToMany
-	private Tweet repostOf;
+	private List<Tweet> reposts;
 	
 	
 	@ManyToMany
