@@ -39,11 +39,11 @@ public class Tweet {
 	
 	
 	@ManyToOne
-	@JoinColumn(name = "tweet_reply_id")
+	@JoinColumn(name = "id_replied_to")
 	private Tweet inReplyTo;
 	
 	@ManyToOne
-	@JoinColumn(name = "tweet_repost_id")
+	@JoinColumn(name = "id_of_repost")
 	private Tweet repostOf;
 	
 	@OneToMany
