@@ -33,6 +33,12 @@ public class User {
 	@ManyToMany
 	private List<User> following;
 
+	@ManyToMany
+	private List<Tweet> likedTweets;
+
+	@ManyToMany
+	private List<Tweet> mentions;
+
 	
 	@Embedded
 	private Profile profile;
