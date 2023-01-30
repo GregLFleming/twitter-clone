@@ -1,9 +1,12 @@
 package com.cooksys.assessment1.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,8 +28,8 @@ public class Hashtag {
 	@Column(nullable = false)
 	private java.sql.Timestamp lastUsed;
 	
-//	@Column(nullable = false)
-//	@ManyToMany
-//	private List<Tweet> tweets;
+	@Column(nullable = false)
+	@ManyToMany
+	private List<Tweet> tweets;
 }
 
