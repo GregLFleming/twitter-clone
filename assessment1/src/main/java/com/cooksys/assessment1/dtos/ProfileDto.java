@@ -8,7 +8,7 @@ import lombok.NonNull;
 @Data
 @NoArgsConstructor
 @Embeddable
-public class ProfileDTO {
+public class ProfileDto {
     private String firstName;
 
     private String lastName;

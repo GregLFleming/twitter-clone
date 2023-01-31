@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 
 @NoArgsConstructor
 @Data
-public class UserResponseDTO {
+public class UserResponseDto {
     @Column(unique=true)
     private String username;
     private Profile profile;
