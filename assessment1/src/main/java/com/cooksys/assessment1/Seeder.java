@@ -2,12 +2,12 @@ package com.cooksys.assessment1;
 
 import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.entities.Profile;
+import com.cooksys.assessment1.entities.Tweet;
 import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.repositories.HashtagRepository;
 import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -32,9 +32,14 @@ public class Seeder implements CommandLineRunner {
         profile1.setLastName("Del Mar");
         user1.setProfile(profile1);
 
-        userRepository.saveAndFlush(user1);
+        Tweet tweet1 = new Tweet();
+        tweet1.setAuthor(user1);
+        tweet1.setContent("Test string");
 
-        System.out.println(userRepository.findAll());
+
+        userRepository.saveAndFlush(user1);
+        tweetRepository.saveAndFlush(tweet1);
+
 
     }
 }

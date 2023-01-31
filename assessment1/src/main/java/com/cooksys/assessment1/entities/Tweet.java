@@ -1,5 +1,6 @@
 package com.cooksys.assessment1.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.Where;
@@ -15,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -32,7 +34,7 @@ public class Tweet {
 	private User author;
 
 	@Column(nullable = false)
-	private java.sql.Timestamp posted;
+	private Timestamp posted = Timestamp.valueOf(LocalDateTime.now());
 	
 	private boolean deleted = false;
 	
