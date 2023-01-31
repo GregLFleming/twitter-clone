@@ -22,12 +22,13 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted=false")
 public class Tweet {
 	
+	//<---------Internal Fields--------->//
 	@Id
 	@GeneratedValue
 	private Long id;
 	
 	@ManyToOne
-//	@JoinColumn(name = "user_table_id")
+	@JoinColumn(name = "user_id")
 	private User author;
 
 	@Column(nullable = false)
@@ -37,6 +38,8 @@ public class Tweet {
 	
 	private String content;
 	
+	
+	//inReplyTo relationships
 	@ManyToOne
 	@JoinColumn(name = "in_reply_to")
 	private Tweet inReplyTo;
@@ -44,6 +47,7 @@ public class Tweet {
 	@OneToMany(mappedBy = "inReplyTo")
 	private List<Tweet> replies;
 	
+	//repostOf relationships
 	@ManyToOne
 	@JoinColumn(name = "repost_of")
 	private Tweet repostOf;
@@ -51,14 +55,23 @@ public class Tweet {
 	@OneToMany(mappedBy = "repostOf")
 	private List<Tweet> reposts;
 	
+	
+	//<---------Outgoing Relationships--------->//
+	
+	//hashtag
 	@ManyToMany
 	@JoinTable(name = "tweet_hashtags", 
 			  joinColumns = @JoinColumn(name = "tweet_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
 	private List<Hashtag> hashtags;
 	
-//	@ManyToMany
-//	private List<User> tweetsLiked;
+	//liked by user
+	@ManyToMany(mappedBy = "likedTweets")
+	private List<User> likedBy;
+	
+	//mentioned by user
+	@ManyToMany(mappedBy = "mentions")
+	private List<User> mentionedBy;
 	
 	
 

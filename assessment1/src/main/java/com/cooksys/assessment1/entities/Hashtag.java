@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Hashtag {
-	
+	//<---------Internal Fields--------->//
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -28,6 +28,8 @@ public class Hashtag {
 	@Column(nullable = false)
 	private java.sql.Timestamp lastUsed;
 	
+	
+	//<---------Outgoing Relationships--------->//
 	@Column(nullable = false)
 	@ManyToMany(mappedBy = "hashtags")
 	private List<Tweet> tweets;
