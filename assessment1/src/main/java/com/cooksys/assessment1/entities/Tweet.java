@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -21,12 +22,13 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted=false")
 public class Tweet {
 	
+	//<---------Internal Fields--------->//
 	@Id
 	@GeneratedValue
 	private Long id;
 	
 	@ManyToOne
-//	@JoinColumn(name = "user_table_id")
+	@JoinColumn(name = "user_id")
 	private User author;
 
 	@Column(nullable = false)
@@ -37,26 +39,39 @@ public class Tweet {
 	private String content;
 	
 	
-	
+	//inReplyTo relationships
 	@ManyToOne
-	@JoinColumn(name = "tweet_reply_id")
+	@JoinColumn(name = "in_reply_to")
 	private Tweet inReplyTo;
 	
+	@OneToMany(mappedBy = "inReplyTo")
+	private List<Tweet> replies;
+	
+	//repostOf relationships
 	@ManyToOne
-	@JoinColumn(name = "tweet_repost_id")
+	@JoinColumn(name = "repost_of")
 	private Tweet repostOf;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "repostOf")
 	private List<Tweet> reposts;
 	
 	
+	//<---------Outgoing Relationships--------->//
+	
+	//hashtag
 	@ManyToMany
-	private List<User> tweetsLiked;
+	@JoinTable(name = "tweet_hashtags", 
+			  joinColumns = @JoinColumn(name = "tweet_id"), 
+			  inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+	private List<Hashtag> hashtags;
 	
-
-
+	//liked by user
+	@ManyToMany(mappedBy = "likedTweets")
+	private List<User> likedBy;
 	
-	
+	//mentioned by user
+	@ManyToMany(mappedBy = "mentions")
+	private List<User> mentionedBy;
 	
 	
 

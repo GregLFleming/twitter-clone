@@ -10,11 +10,13 @@ import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Entity
 @Data
 @NoArgsConstructor
 public class Hashtag {
-	
+	//<---------Internal Fields--------->//
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -23,13 +25,15 @@ public class Hashtag {
 	private String label;
 	
 	@Column(nullable = false)
-	private java.sql.Timestamp firstUsed;
+	private Timestamp firstUsed;
 	
 	@Column(nullable = false)
-	private java.sql.Timestamp lastUsed;
+	private Timestamp lastUsed;
 	
+	
+	//<---------Outgoing Relationships--------->//
 	@Column(nullable = false)
-	@ManyToMany
+	@ManyToMany(mappedBy = "hashtags")
 	private List<Tweet> tweets;
 }
 
