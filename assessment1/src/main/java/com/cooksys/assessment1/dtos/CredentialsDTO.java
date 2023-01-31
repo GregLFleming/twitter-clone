@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 @NoArgsConstructor
 @Data
-public class CredentialsRequestDTO {
+public class CredentialsDTO {
     @NonNull
     private String username;
     @NonNull
