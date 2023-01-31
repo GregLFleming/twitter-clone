@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 @NoArgsConstructor
 @Data
-public class HashtagDTO {
+public class HashtagDto {
         @Column(unique=true)
         private String label;
         private Timestamp firstUsed;
