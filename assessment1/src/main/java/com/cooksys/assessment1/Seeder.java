@@ -21,16 +21,34 @@ public class Seeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception{
         User user1 = new User();
+        User user2 = new User();
+        
         Credentials credentials1 = new Credentials();
-        credentials1.setUsername("test");
-        credentials1.setPassword("password");
+        Credentials credentials2 = new Credentials();
+        
+        credentials1.setUsername("firstUser");
+        credentials1.setPassword("password1");
+        
+        credentials2.setUsername("secondUser");
+        credentials2.setPassword("password2");
+        
         user1.setCredentials(credentials1);
+        user2.setCredentials(credentials2);
+        
         Profile profile1 = new Profile();
+        Profile profile2 = new Profile();
+        
         profile1.setEmail("test@test.com");
         profile1.setPhone("9999999999");
         profile1.setFirstName("Luis");
         profile1.setLastName("Del Mar");
         user1.setProfile(profile1);
+        
+        profile2.setEmail("test@test2.com");
+        profile2.setPhone("2222222222");
+        profile2.setFirstName("Luis2");
+        profile2.setLastName("Del Mar2");
+        user2.setProfile(profile2);
 
         Tweet tweet1 = new Tweet();
         tweet1.setAuthor(user1);
@@ -38,8 +56,7 @@ public class Seeder implements CommandLineRunner {
 
 
         userRepository.saveAndFlush(user1);
+        userRepository.saveAndFlush(user2);
         tweetRepository.saveAndFlush(tweet1);
-
-
     }
 }
