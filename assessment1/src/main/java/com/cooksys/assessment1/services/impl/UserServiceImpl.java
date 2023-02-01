@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.assessment1.dtos.CredentialsDto;
+import com.cooksys.assessment1.dtos.UserRequestDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.BadRequestException;
@@ -82,7 +83,6 @@ public class UserServiceImpl implements UserService {
 		User userToUnfollow = queryResult.get();
 		
 		//check if credentials submitted exist
-		System.out.println(credentialsRequestDto);
 		queryResult = userRepository.findByCredentials(credentialsMapper.requestDtoEntity(credentialsRequestDto));
 		if(queryResult.isEmpty()) {
 			throw new NotFoundException("Your credentials cannot be found in the database");
@@ -110,5 +110,16 @@ public class UserServiceImpl implements UserService {
 		userRepository.saveAndFlush(userToUnfollow);
 		
 		return;
+	}
+
+	@Override
+	public UserResponseDto updateUsername(UserRequestDto userRequestDto, String username) {
+		//check if credentials submitted exist
+		Optional<User> queryResult = userRepository.findByCredentials(userMapper.userRequestDtoToEntity(userRequestDto).getCredentials());
+		if(queryResult.isEmpty()) {
+			throw new NotFoundException("Your credentials cannot be found in the database");
+		}
+		User user = queryResult.get();
+		return userMapper.entityResponseDto(user);
 	}
 }
