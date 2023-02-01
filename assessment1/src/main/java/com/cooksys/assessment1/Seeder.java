@@ -31,7 +31,7 @@ public class Seeder implements CommandLineRunner {
         profile1.setFirstName("Luis");
         profile1.setLastName("Del Mar");
         user1.setProfile(profile1);
-
+        user1.setDeleted(true);
         Tweet tweet1 = new Tweet();
         tweet1.setAuthor(user1);
         tweet1.setContent("Test string");
