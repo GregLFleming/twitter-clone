@@ -1,8 +1,10 @@
 package com.cooksys.assessment1.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 
 import jakarta.persistence.Column;
@@ -17,7 +19,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -36,7 +37,8 @@ public class User {
 	private Credentials credentials;
 	
 	@Column(nullable = false)
-	private Timestamp joined = Timestamp.valueOf(LocalDateTime.now());
+	@CreationTimestamp
+	private Timestamp joined;
 	
 	private boolean deleted = false;
 

@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TweetRequestDto {
 
-
     private String content;
 
-//    private CredentialsDto credentials;
+    private CredentialsDto credentials;
 
 }

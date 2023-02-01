@@ -1,10 +1,12 @@
 package com.cooksys.assessment1.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +18,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -30,11 +31,12 @@ public class Tweet {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+//	@JoinColumn(name = "user_id")
 	private User author;
 
 	@Column(nullable = false)
-	private Timestamp posted = Timestamp.valueOf(LocalDateTime.now());
+	@CreationTimestamp
+	private Timestamp posted;
 	
 	private boolean deleted = false;
 	
@@ -61,7 +63,7 @@ public class Tweet {
 	//<---------Outgoing Relationships--------->//
 	
 	//hashtag
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.MERGE)
 	@JoinTable(name = "tweet_hashtags", 
 			  joinColumns = @JoinColumn(name = "tweet_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "hashtag_id"))

@@ -7,13 +7,11 @@ import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
-@Embeddable
 public class ProfileDto {
     private String firstName;
 
     private String lastName;
 
-    @NonNull
     private String email;
 
     private String phone;

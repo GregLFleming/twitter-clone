@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ProfileMapper.class, CredentialsMapper.class})
 public interface UserMapper {
 	
 	List<UserResponseDto> entitiesToResponseDTOs(List<User> users);

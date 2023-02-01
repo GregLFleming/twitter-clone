@@ -10,8 +10,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Data
 public class UserResponseDto {
-    @Column(unique=true)
+
     private String username;
     private Profile profile;
     private Timestamp joined;
+    
 }

@@ -12,13 +12,10 @@ import lombok.NonNull;
 @Data
 public class ContextDto {
 	
-	@NonNull
-	private Tweet target; 
+	private TweetResponseDto target; 
 	
-	@NonNull
-	private List<Tweet> before;
+	private List<TweetResponseDto> before;
 	
-	@NonNull
-	private List<Tweet> after;
+	private List<TweetResponseDto> after;
 
 }
