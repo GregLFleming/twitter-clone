@@ -10,4 +10,6 @@ public interface UserService {
 	List<UserResponseDto> getUsers();
 
 	void followUser(CredentialsDto credentialsRequestDto, String username);
+
+	void unfollowUser(CredentialsDto credentialsRequestDto, String username);
 }

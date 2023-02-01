@@ -27,11 +27,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserResponseDto> getUsers() {
-		List<User> queryResult = userRepository.findAllByDeletedFalse();
-		if(queryResult.isEmpty()) {
-			throw new NotFoundException("There are no users in the database.");
-		}
-		
 		return userMapper.entitiesToResponseDTOs(userRepository.findAllByDeletedFalse());
 	}
 
@@ -72,6 +67,47 @@ public class UserServiceImpl implements UserService {
 		userToFollow.setFollowers(userToFollowFollowers);
 		userRepository.saveAndFlush(user);
 		userRepository.saveAndFlush(userToFollow);
+		
+		return;
+	}
+
+	@Override
+	public void unfollowUser(CredentialsDto credentialsRequestDto, String username) {
+		
+		//check if user to unfollow exists
+		Optional<User> queryResult = userRepository.findByCredentialsUsername(username);
+		if(queryResult.isEmpty()) {
+			throw new NotFoundException("A user with username " + username + " could not be found");
+		}
+		User userToUnfollow = queryResult.get();
+		
+		//check if credentials submitted exist
+		System.out.println(credentialsRequestDto);
+		queryResult = userRepository.findByCredentials(credentialsMapper.requestDtoEntity(credentialsRequestDto));
+		if(queryResult.isEmpty()) {
+			throw new NotFoundException("Your credentials cannot be found in the database");
+		}
+		User user = queryResult.get();
+		
+		//check if user is not yet following userToFollow
+		if(!userToUnfollow.getFollowers().contains(user)) {
+			throw new BadRequestException("You are not yet following the user with username: " + username + "!" );
+		}
+		
+		//Make sure user and userToFollow are different
+		if(userToUnfollow.getId() == user.getId()) {
+			throw new BadRequestException("You cannot unfollow yourself!" );
+		}
+		
+		//update followers and following fields, insert into database.
+		List<User> userIsFollowing = user.getFollowing();
+		List<User> userToUnfollowFollowers = userToUnfollow.getFollowers();	
+		userIsFollowing.remove(userToUnfollow);
+		userToUnfollowFollowers.remove(user);
+		user.setFollowing(userIsFollowing);
+		userToUnfollow.setFollowers(userToUnfollowFollowers);
+		userRepository.saveAndFlush(user);
+		userRepository.saveAndFlush(userToUnfollow);
 		
 		return;
 	}
