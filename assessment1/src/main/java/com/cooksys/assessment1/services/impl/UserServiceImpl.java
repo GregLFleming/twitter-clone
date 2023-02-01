@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.cooksys.assessment1.dtos.CredentialsDto;
 import com.cooksys.assessment1.dtos.UserRequestDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
+import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.BadRequestException;
 import com.cooksys.assessment1.exceptions.NotFoundException;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 	public void followUser(CredentialsDto credentialsRequestDto, String username) {
 		
 		//check if user to follow exists
-		Optional<User> queryResult = userRepository.findByCredentialsUsername(username);
+		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
 		if(queryResult.isEmpty()) {
 			throw new NotFoundException("A user with username " + username + " could not be found");
 		}
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
 	public void unfollowUser(CredentialsDto credentialsRequestDto, String username) {
 		
 		//check if user to unfollow exists
-		Optional<User> queryResult = userRepository.findByCredentialsUsername(username);
+		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
 		if(queryResult.isEmpty()) {
 			throw new NotFoundException("A user with username " + username + " could not be found");
 		}
@@ -114,12 +115,25 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto updateUsername(UserRequestDto userRequestDto, String username) {
-		//check if credentials submitted exist
+		
+		//check if user exists
 		Optional<User> queryResult = userRepository.findByCredentials(userMapper.userRequestDtoToEntity(userRequestDto).getCredentials());
 		if(queryResult.isEmpty()) {
 			throw new NotFoundException("Your credentials cannot be found in the database");
 		}
 		User user = queryResult.get();
-		return userMapper.entityResponseDto(user);
+		
+		//check if user is deleted
+		if(user.isDeleted()) {
+			throw new BadRequestException("Username " + user.getCredentials().getUsername() + " has been deleted.");
+		}
+
+		//update username
+		Credentials newCredentials = user.getCredentials();
+		newCredentials.setUsername(username);
+		user.setCredentials(newCredentials);
+		
+		//save to database
+		return userMapper.entityResponseDto(userRepository.saveAndFlush(user));
 	}
 }
