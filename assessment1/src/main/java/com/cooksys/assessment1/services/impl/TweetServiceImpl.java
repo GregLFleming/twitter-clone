@@ -1,9 +1,12 @@
 package com.cooksys.assessment1.services.impl;
 
 import com.cooksys.assessment1.dtos.TweetResponseDto;
+import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.Tweet;
+import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.NotFoundException;
 import com.cooksys.assessment1.mappers.TweetMapper;
+import com.cooksys.assessment1.mappers.UserMapper;
 import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.services.TweetService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ public class TweetServiceImpl implements TweetService {
 
     private  final TweetRepository tweetRepository;
     private final TweetMapper tweetMapper;
+    private final UserMapper userMapper;
 
     @Override
     public List<TweetResponseDto> getTweets(){
@@ -43,5 +47,16 @@ public class TweetServiceImpl implements TweetService {
             throw new NotFoundException("There is no tweet with id " + id);
         }
         return tweetMapper.entityToDto(tweet.get());
+    }
+//    Retrieves the active users who have liked the tweet with the given id.
+//    If that tweet is deleted or otherwise doesn't exist, an error should be sent in lieu of a response.
+    @Override
+    public List<UserResponseDto> getTweetLikesById(Long id){
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if(tweet.isEmpty() || !tweet.get().isDeleted()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        List<User> users = tweet.get().getLikedBy();
+        return userMapper.entitiesToResponseDTOs(users);
     }
 }

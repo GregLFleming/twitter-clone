@@ -11,6 +11,7 @@ import java.util.List;
 public interface UserMapper {
 	
 	List<UserResponseDto> entitiesToResponseDTOs(List<User> users);
+
 	
 	@Mapping(target = "username", source = "credentials.username") //insert the value from credentials.username into the "username" field of response DTO
 	UserResponseDto entityResponseDto(User user);

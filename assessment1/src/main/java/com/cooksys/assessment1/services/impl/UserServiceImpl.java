@@ -20,12 +20,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserResponseDto> getUsers() {
-		
+
 		List<User> queryResult = userRepository.findAllByDeletedFalse();
 		if(queryResult.isEmpty()) {
 			throw new NotFoundException("There are no users in the database.");
 		}
-		
+
 		return userMapper.entitiesToResponseDTOs(userRepository.findAllByDeletedFalse());
 	}
 }
