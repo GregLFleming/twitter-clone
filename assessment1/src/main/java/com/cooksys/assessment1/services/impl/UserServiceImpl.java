@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
 
-	private final CredentialsMapper credentialsMapper;
 
 	private void validateUserRequest(UserRequestDto userRequestDto){
 
@@ -148,7 +147,7 @@ public class UserServiceImpl implements UserService {
 		user.setCredentials(newCredentials);
 		
 		//save to database
-		return userMapper.entityResponseDto(userRepository.saveAndFlush(user));
+		return userMapper.entityToResponseDto(userRepository.saveAndFlush(user));
 	}
 
 	@Override
