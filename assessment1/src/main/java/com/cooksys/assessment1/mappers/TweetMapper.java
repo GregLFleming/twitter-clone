@@ -5,7 +5,7 @@ import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.entities.Tweet;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface TweetMapper {
 
     TweetResponseDto entityToDto(Tweet entity);
