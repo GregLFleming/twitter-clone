@@ -1,12 +1,11 @@
 package com.cooksys.assessment1.mappers;
 
-import java.util.List;
-
+import com.cooksys.assessment1.dtos.UserResponseDto;
+import com.cooksys.assessment1.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.cooksys.assessment1.dtos.UserResponseDto;
-import com.cooksys.assessment1.entities.User;
+import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {ProfileMapper.class, CredentialsMapper.class})
 public interface UserMapper {
