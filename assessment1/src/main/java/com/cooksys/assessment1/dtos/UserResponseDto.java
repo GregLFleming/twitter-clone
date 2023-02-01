@@ -14,6 +14,4 @@ public class UserResponseDto {
     private String username;
     private Profile profile;
     private Timestamp joined;
-
-
 }
