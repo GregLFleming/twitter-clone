@@ -2,6 +2,7 @@ package com.cooksys.assessment1.mappers;
 
 import java.util.List;
 
+import com.cooksys.assessment1.dtos.UserRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,6 +15,9 @@ public interface UserMapper {
 	List<UserResponseDto> entitiesToResponseDTOs(List<User> users);
 	
 	@Mapping(target = "username", source = "credentials.username") //insert the value from credentials.username into the "username" field of response DTO
-	UserResponseDto entityResponseDto(User user);
+	UserResponseDto entityToResponseDto(User user);
+
+
+	User RequestDtoToEntity(UserRequestDto userRequestDto);
 
 }

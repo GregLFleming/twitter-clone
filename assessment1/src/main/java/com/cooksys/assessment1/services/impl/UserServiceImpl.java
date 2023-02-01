@@ -2,6 +2,7 @@ package com.cooksys.assessment1.services.impl;
 
 import java.util.List;
 
+import com.cooksys.assessment1.dtos.UserRequestDto;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.assessment1.dtos.UserResponseDto;
@@ -28,5 +29,12 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return userMapper.entitiesToResponseDTOs(userRepository.findAllByDeletedFalse());
+	}
+
+	@Override
+	public UserResponseDto createUser(UserRequestDto userRequestDto) {
+		User user = userMapper.RequestDtoToEntity(userRequestDto);
+		userRepository.saveAndFlush(user);
+		return userMapper.entityToResponseDto(user);
 	}
 }
