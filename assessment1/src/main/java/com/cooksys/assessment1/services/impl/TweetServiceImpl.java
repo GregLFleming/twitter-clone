@@ -345,5 +345,38 @@ public class TweetServiceImpl implements TweetService {
 		return hashtagMapper.entitiesToDtos(tweet.getHashtags());
 	}
 
+    @Override
+    public TweetResponseDto replyTweetById(Long id, TweetRequestDto tweetRequestDto) {
+        Tweet replyTweet = tweetMapper.requestDtoToEntity(tweetRequestDto);
+        Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
+        Optional<User> author = userRepository.findByCredentials(credentials);
+        Optional<Tweet> repliedTo = tweetRepository.findById(id);
+
+
+
+        if (author.isEmpty())
+            throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
+
+        if(repliedTo.isEmpty())
+            throw new BadRequestException("Tweet with that id does not exist");
+
+        replyTweet.setAuthor(author.get());
+
+        setupHashtag(replyTweet);
+
+        replyTweet.setInReplyTo(repliedTo.get());
+        List<Tweet> replies = repliedTo.get().getReplies();
+        replies.add(replyTweet);
+        repliedTo.get().setReplies(replies);
+        tweetRepository.saveAndFlush(repliedTo.get());
+        tweetRepository.saveAndFlush(replyTweet);
+
+        setupMentions(replyTweet);
+
+
+
+        return tweetMapper.entityToDto(replyTweet);
+    }
+
 
 }

@@ -74,10 +74,10 @@ public class TweetController {
         return tweetService.createTweet(tweetRequestDto);
     }
     
-    @PostMapping("/{id}/reply")
-    public TweetResponseDto replyTo(@RequestBody TweetRequestDto tweetRequestDto, @PathVariable Long id) {
-    	return tweetService.replyTo(tweetRequestDto, id);
-    }
+//    @PostMapping("/{id}/reply")
+//    public TweetResponseDto replyTo(@RequestBody TweetRequestDto tweetRequestDto, @PathVariable Long id) {
+//    	return tweetService.replyTo(tweetRequestDto, id);
+//    }
     @DeleteMapping("/{id}")
     public TweetResponseDto deleteTweetById(@PathVariable(name="id") Long id,@RequestBody Credentials credentials){
         return tweetService.deleteTweetById(id,credentials);
@@ -89,6 +89,11 @@ public class TweetController {
     @GetMapping("/{id}/mentions")
     public List<UserResponseDto> getMentionsById(@PathVariable(name="id") Long id){
         return tweetService.getMentionsById(id);
+    }
+
+    @PostMapping("/{id}/reply")
+    public TweetResponseDto replyTweetById(@PathVariable Long id, @RequestBody TweetRequestDto tweetRequestDto){
+        return tweetService.replyTweetById(id, tweetRequestDto);
     }
 
 }
