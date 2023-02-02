@@ -171,9 +171,12 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweetToAdd = tweetMapper.requestDtoToEntity(tweetRequestDto);
         Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
         Optional<User> author = userRepository.findByCredentials(credentials);
-        
+
         if(author.isEmpty())
             throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
+
+        if(tweetRequestDto.getContent() == null)
+            throw new BadRequestException("Missing tweet content");
 
         tweetToAdd.setAuthor(author.get());
 
