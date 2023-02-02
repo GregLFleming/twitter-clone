@@ -63,7 +63,7 @@ public class TweetServiceImpl implements TweetService {
         String contentArray[] = tweetToAdd.getContent().split(" ");
         for (String word : contentArray) {
             if (word.charAt(0) == '#') {
-                hashtagStrings.add(word);
+                hashtagStrings.add(word.substring(1));
             }
         }
 
