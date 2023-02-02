@@ -2,6 +2,7 @@ package com.cooksys.assessment1.controllers;
 
 import java.util.List;
 
+import com.cooksys.assessment1.dtos.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,11 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cooksys.assessment1.dtos.ContextDto;
-import com.cooksys.assessment1.dtos.HashtagDto;
-import com.cooksys.assessment1.dtos.TweetRequestDto;
-import com.cooksys.assessment1.dtos.TweetResponseDto;
-import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.services.TweetService;
 import com.cooksys.assessment1.services.UserService;
@@ -65,8 +61,8 @@ public class TweetController {
     }
     
     @PostMapping("/{id}/like")
-    public void likeTweetById(@PathVariable(name="id") Long id, @RequestBody Credentials credentials){
-        tweetService.likeTweetById(id, credentials);
+    public void likeTweetById(@PathVariable(name="id") Long id, @RequestBody CredentialsDto credentialsDto){
+        tweetService.likeTweetById(id, credentialsDto);
     }
 
     @PostMapping

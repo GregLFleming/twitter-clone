@@ -9,15 +9,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.cooksys.assessment1.dtos.*;
 import com.cooksys.assessment1.entities.Hashtag;
 import com.cooksys.assessment1.repositories.HashtagRepository;
 import org.springframework.stereotype.Service;
 
-import com.cooksys.assessment1.dtos.ContextDto;
-import com.cooksys.assessment1.dtos.HashtagDto;
-import com.cooksys.assessment1.dtos.TweetRequestDto;
-import com.cooksys.assessment1.dtos.TweetResponseDto;
-import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.entities.Tweet;
 import com.cooksys.assessment1.entities.User;
@@ -147,9 +143,11 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public void likeTweetById(Long id, Credentials credentials) {
+    public void likeTweetById(Long id, CredentialsDto credentialsDto) {
+        System.out.println(id);
         Optional<Tweet> tweet = tweetRepository.findById(id);
-        if (tweet.isEmpty() || !tweet.get().isDeleted()) {
+        Credentials credentials = credentialsMapper.requestDtoEntity(credentialsDto);
+        if (tweet.isEmpty() || tweet.get().isDeleted()) {
             throw new NotFoundException("Process finished with exit code 0e is no tweet with id " + id);
         }
         Optional<User> user = userRepository.findByCredentials(credentials);
