@@ -1,9 +1,11 @@
 package com.cooksys.assessment1.mappers;
 
+import com.cooksys.assessment1.dtos.ContextDto;
 import com.cooksys.assessment1.dtos.TweetRequestDto;
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.entities.Tweet;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -14,5 +16,10 @@ public interface TweetMapper {
 
     Tweet requestDtoToEntity(TweetRequestDto tweetRequestDto);
     List<TweetResponseDto> entitiesToResponseDTOs(List<Tweet> tweets);
+
+    @Mapping(target = "target", source = "inReplyTo")
+    @Mapping(target = "before", source = "reposts")
+    @Mapping(target = "after", source = "replies")
+	ContextDto tweetEntityToContextDto(Tweet tweet);
 
 }

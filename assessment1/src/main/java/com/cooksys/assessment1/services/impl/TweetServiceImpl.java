@@ -1,5 +1,14 @@
 package com.cooksys.assessment1.services.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.cooksys.assessment1.dtos.ContextDto;
+import com.cooksys.assessment1.dtos.HashtagDto;
 import com.cooksys.assessment1.dtos.TweetRequestDto;
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
@@ -9,18 +18,14 @@ import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.BadRequestException;
 import com.cooksys.assessment1.exceptions.NotFoundException;
 import com.cooksys.assessment1.mappers.CredentialsMapper;
+import com.cooksys.assessment1.mappers.HashTagMapper;
 import com.cooksys.assessment1.mappers.TweetMapper;
 import com.cooksys.assessment1.mappers.UserMapper;
 import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.repositories.UserRepository;
 import com.cooksys.assessment1.services.TweetService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 
 
@@ -33,6 +38,7 @@ public class TweetServiceImpl implements TweetService {
     private final UserRepository userRepository;
     private final CredentialsMapper credentialsMapper;
     private final UserMapper userMapper;
+    private final HashTagMapper hashtagMapper;
 
 
     @Override
@@ -128,7 +134,6 @@ public class TweetServiceImpl implements TweetService {
     }
     @Override
     public TweetResponseDto deleteTweetById(Long id, Credentials credentials){
-        System.out.println(credentials);
         Optional<Tweet> tweet = tweetRepository.findById(id);
         //check to see if tweet exists.
         if(tweet.isEmpty()){
@@ -165,5 +170,70 @@ public class TweetServiceImpl implements TweetService {
         repost.setAuthor(userReposting);
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
     }
+
+	@Override
+	public List<TweetResponseDto> getTweetReposts(Long id) {
+		/**Get all reposts of tweet with id = id.
+		 * Inputs: id
+		 * Output: List<TweetResponseDto>
+		 */
+		Optional<Tweet> queryResult = tweetRepository.findById(id);
+        //check to see if tweet exists.
+        if(queryResult.isEmpty()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        Tweet tweet = queryResult.get();
+	
+		return tweetMapper.entitiesToResponseDTOs(tweet.getReposts());
+	}
+
+	@Override
+	public List<TweetResponseDto> getTweetReplies(Long id) {
+		/**Get all replies of tweet with id = id.
+		 * Inputs: id
+		 * Output: List<TweetResponseDto>
+		 */
+		Optional<Tweet> queryResult = tweetRepository.findById(id);
+        //check to see if tweet exists.
+        if(queryResult.isEmpty()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        Tweet tweet = queryResult.get();
+	
+		return tweetMapper.entitiesToResponseDTOs(tweet.getReplies());
+	}
+
+	@Override
+	public ContextDto getTweetContext(Long id) {
+		/**Get context of tweet with id = id.
+		 * Inputs: id
+		 * Output: ContextResponseDto
+		 */
+		Optional<Tweet> queryResult = tweetRepository.findById(id);
+        //check to see if tweet exists.
+        if(queryResult.isEmpty()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        
+        Tweet tweet = queryResult.get();
+        
+		return tweetMapper.tweetEntityToContextDto(tweet);
+	}
+
+	@Override
+	public List<HashtagDto> getTweetTags(Long id) {
+		/**Get all Hashtags of tweet with id = id.
+		 * Inputs: id
+		 * Output: List<hashtagDto>
+		 */
+		Optional<Tweet> queryResult = tweetRepository.findById(id);
+        //check to see if tweet exists.
+        if(queryResult.isEmpty()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        Tweet tweet = queryResult.get();
+	
+		return hashtagMapper.entitiesToDtos(tweet.getHashtags());
+	}
 
 }
