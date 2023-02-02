@@ -288,7 +288,9 @@ public class UserServiceImpl implements UserService {
 		User user = userQueryResult.get();
 		
 		//check credentials
-		if(user.getCredentials() != credentialsMapper.requestDtoEntity(credentials)) {
+		System.out.println(user.getCredentials());
+		System.out.println(credentialsMapper.requestDtoEntity(credentials));
+		if(!user.getCredentials().equals(credentialsMapper.requestDtoEntity(credentials))) {
 			throw new BadRequestException("Your credentials do not match the profile you are trying to delete." ); 
 		}
 		
