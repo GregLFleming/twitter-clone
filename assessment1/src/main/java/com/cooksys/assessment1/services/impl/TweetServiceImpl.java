@@ -126,4 +126,44 @@ public class TweetServiceImpl implements TweetService {
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToAdd));
 
     }
+    @Override
+    public TweetResponseDto deleteTweetById(Long id, Credentials credentials){
+        System.out.println(credentials);
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        //check to see if tweet exists.
+        if(tweet.isEmpty()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+//        check to see if user creditentials exist
+        Optional<User> user = userRepository.findByCredentials(credentials);
+        if (user.isEmpty() || tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername()) ) {
+            throw new NotFoundException("There is no user with  " + credentials.getUsername());
+        }
+        tweet.get().setDeleted(true);
+        tweetRepository.saveAndFlush(tweet.get());
+        return tweetMapper.entityToDto(tweet.get());
+    }
+
+    @Override
+    public TweetResponseDto repostTweetById(Long id, Credentials credentials){
+
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(id);
+
+        if(tweet.isEmpty() || tweet.get().isDeleted()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        Optional<User> user = userRepository.findByCredentials(credentials);
+
+        if(user.isEmpty() || tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername()))
+            throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
+        System.out.println("tweet "+ tweet.get().isDeleted());
+        System.out.println("user "+ user.isEmpty());
+        Tweet tweetToRepost = tweet.get();
+        User userReposting = user.get();
+        Tweet repost = tweetToRepost;
+        repost.setRepostOf(repost);
+        repost.setAuthor(userReposting);
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
+    }
+
 }

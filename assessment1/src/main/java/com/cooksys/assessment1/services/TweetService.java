@@ -19,4 +19,7 @@ public interface TweetService {
     
     TweetResponseDto replyTo(TweetRequestDto tweetRequestDto, Long id);
 
+    TweetResponseDto deleteTweetById(Long id, Credentials credentials);
+
+    TweetResponseDto repostTweetById(Long id, Credentials credentials);
 }
