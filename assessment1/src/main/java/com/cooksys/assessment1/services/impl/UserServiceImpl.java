@@ -85,8 +85,12 @@ public class UserServiceImpl implements UserService {
 		user.setCredentials(newCredentials);
 		
 //		//update profile
-//		Profile newProfile = userMapper.requestDtoToEntity(userRequestDto).getProfile();
-//		user.setProfile(newProfile);
+		Profile newProfile = userMapper.requestDtoToEntity(userRequestDto).getProfile();
+		
+		//validate and set newProfile
+		if(newProfile.getEmail() != null) {
+			user.setProfile(newProfile);
+		}
 		
 		//save to database
 		return userMapper.entityToResponseDto(userRepository.saveAndFlush(user));
