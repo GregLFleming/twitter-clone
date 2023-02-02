@@ -1,14 +1,5 @@
 package com.cooksys.assessment1.services.impl;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.cooksys.assessment1.dtos.CredentialsDto;
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserRequestDto;
@@ -25,8 +16,14 @@ import com.cooksys.assessment1.mappers.UserMapper;
 import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.repositories.UserRepository;
 import com.cooksys.assessment1.services.UserService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -300,4 +297,14 @@ public class UserServiceImpl implements UserService {
 		return userMapper.entityToResponseDto(user);
 	}
 
+	@Override
+	public List<UserResponseDto> getFollowers(String username){
+		Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(user.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		List<User> followers = user.get().getFollowers().stream().filter(follower -> !follower.isDeleted()).collect(Collectors.toList());
+
+		return userMapper.entitiesToResponseDTOs(followers);
+	}
 }

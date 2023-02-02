@@ -1,13 +1,11 @@
 package com.cooksys.assessment1.services;
 
-import java.util.List;
-
-
 import com.cooksys.assessment1.dtos.CredentialsDto;
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserRequestDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
-import com.cooksys.assessment1.entities.User;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -36,4 +34,6 @@ public interface UserService {
 
 
 	UserResponseDto deleteUser(CredentialsDto credentials, String username);
+
+    List<UserResponseDto> getFollowers(String username);
 }

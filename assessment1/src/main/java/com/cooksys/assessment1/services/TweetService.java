@@ -22,4 +22,6 @@ public interface TweetService {
     TweetResponseDto deleteTweetById(Long id, Credentials credentials);
 
     TweetResponseDto repostTweetById(Long id, Credentials credentials);
+
+    List<UserResponseDto> getMentionsById(Long id);
 }

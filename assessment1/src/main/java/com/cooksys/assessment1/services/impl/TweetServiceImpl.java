@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -165,5 +165,14 @@ public class TweetServiceImpl implements TweetService {
         repost.setAuthor(userReposting);
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
     }
-
+    @Override
+    public List<UserResponseDto> getMentionsById(Long id){
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(id);
+        if(tweet.isEmpty() || tweet.get().isDeleted()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        List<User> users = tweet.get().getMentionedBy();
+        users = users.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
+        return userMapper.entitiesToResponseDTOs(users);
+    }
 }
