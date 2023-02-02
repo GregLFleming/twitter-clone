@@ -86,5 +86,9 @@ public class TweetController {
     public TweetResponseDto repostTweetById(@PathVariable(name="id") Long id,@RequestBody Credentials credentials){
         return tweetService.repostTweetById(id, credentials);
     }
+    @GetMapping("/{id}/mentions")
+    public List<UserResponseDto> getMentionsById(@PathVariable(name="id") Long id){
+        return tweetService.getMentionsById(id);
+    }
 
 }

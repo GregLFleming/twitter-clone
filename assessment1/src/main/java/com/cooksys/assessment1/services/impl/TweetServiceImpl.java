@@ -25,7 +25,15 @@ import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.repositories.UserRepository;
 import com.cooksys.assessment1.services.TweetService;
 
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
+
 
 
 
@@ -171,6 +179,18 @@ public class TweetServiceImpl implements TweetService {
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
     }
 
+    @Override
+    public List<UserResponseDto> getMentionsById(Long id){
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(id);
+        if(tweet.isEmpty() || tweet.get().isDeleted()){
+            throw new NotFoundException("There is no tweet with id " + id);
+        }
+        List<User> users = tweet.get().getMentionedBy();
+        users = users.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
+        return userMapper.entitiesToResponseDTOs(users);
+    }
+
+
 	@Override
 	public List<TweetResponseDto> getTweetReposts(Long id) {
 		/**Get all reposts of tweet with id = id.
@@ -235,5 +255,6 @@ public class TweetServiceImpl implements TweetService {
 	
 		return hashtagMapper.entitiesToDtos(tweet.getHashtags());
 	}
+
 
 }
