@@ -165,29 +165,6 @@ public class TweetServiceImpl implements TweetService {
         user.get().setLikedTweets(tweets);
         userRepository.saveAndFlush(user.get());
     }
-	@Override
-	public TweetResponseDto replyTo(TweetRequestDto tweetRequestDto, Long id) {
-		
-		//Check if tweet exists
-		Optional<Tweet> queryResult = tweetRepository.findByIdAndDeletedFalse(id);
-		if(queryResult.isEmpty()){
-			throw new NotFoundException("A Tweet with id: " + id + " could not be found");
-		}
-		Tweet tweetRepliedTo = queryResult.get();
-		
-		//validate user credentials
-		Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
-		Optional<User> userQueryResult = userRepository.findByCredentialsAndDeletedFalse(credentials);
-		if(userQueryResult.isEmpty()) {
-			throw new NotFoundException("A user with username: " + credentials.getUsername() + " could not be found");
-		}
-//		User user = userQueryResult.get();
-		
-		Tweet reply = tweetMapper.requestDtoToEntity(tweetRequestDto);
-		reply.setInReplyTo(tweetRepliedTo);
-		System.out.println(reply);
-		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(reply));
-	}
 
     @Override
     public TweetResponseDto createTweet (TweetRequestDto tweetRequestDto){
