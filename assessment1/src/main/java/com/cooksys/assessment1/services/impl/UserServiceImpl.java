@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserResponseDto createUser(UserRequestDto userRequestDto) {
 		validateUserRequest(userRequestDto);
-
+		
 		User user = userMapper.requestDtoToEntity(userRequestDto);
 		Optional<User> check = userRepository.findByCredentials(user.getCredentials());
 		if(!check.isEmpty())
@@ -295,6 +295,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		user.setDeleted(true);
+		userRepository.saveAndFlush(user);
 		
 		return userMapper.entityToResponseDto(user);
 	}

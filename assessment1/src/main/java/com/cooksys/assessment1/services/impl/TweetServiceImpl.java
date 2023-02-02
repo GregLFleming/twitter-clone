@@ -1,5 +1,10 @@
 package com.cooksys.assessment1.services.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -189,8 +194,8 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweetToAdd = tweetMapper.requestDtoToEntity(tweetRequestDto);
         Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
         Optional<User> author = userRepository.findByCredentials(credentials);
-
-        if (author.isEmpty())
+        
+        if(author.isEmpty())
             throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
 
         tweetToAdd.setAuthor(author.get());
@@ -209,11 +214,17 @@ public class TweetServiceImpl implements TweetService {
         if(tweet.isEmpty()){
             throw new NotFoundException("There is no tweet with id " + id);
         }
-//        check to see if user creditentials exist
+//      check to see if user creditentials exist
         Optional<User> user = userRepository.findByCredentials(credentials);
-        if (user.isEmpty() || tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername()) ) {
-            throw new NotFoundException("There is no user with  " + credentials.getUsername());
+        if (user.isEmpty()){
+            throw new NotFoundException("There is no user with username " + credentials.getUsername());
         }
+        
+        //check if credentials match those of the tweet
+        if(!tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername())){
+        	throw new BadRequestException("Supplied credentials do not match the tweet");
+        }
+        
         tweet.get().setDeleted(true);
         tweetRepository.saveAndFlush(tweet.get());
         return tweetMapper.entityToDto(tweet.get());
@@ -296,10 +307,22 @@ public class TweetServiceImpl implements TweetService {
         if(queryResult.isEmpty()){
             throw new NotFoundException("There is no tweet with id " + id);
         }
-        
         Tweet tweet = queryResult.get();
         
-		return tweetMapper.tweetEntityToContextDto(tweet);
+        //Assign values for target and after
+        Tweet target = tweet.getInReplyTo();
+        List<Tweet> after = tweet.getReplies();
+        
+        
+        //find all tweets before
+        List<Tweet> before = new ArrayList<>();
+        Tweet curTweet = tweet.getInReplyTo();
+        while(curTweet != null) {
+        	before.add(curTweet);
+        	curTweet = curTweet.getInReplyTo();
+        }
+        
+		return tweetMapper.tweetEntityToContextDto(target, before, after);
 	}
 
 	@Override

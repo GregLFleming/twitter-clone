@@ -17,9 +17,6 @@ public interface TweetMapper {
     Tweet requestDtoToEntity(TweetRequestDto tweetRequestDto);
     List<TweetResponseDto> entitiesToResponseDTOs(List<Tweet> tweets);
 
-    @Mapping(target = "target", source = "inReplyTo")
-    @Mapping(target = "before", source = "reposts")
-    @Mapping(target = "after", source = "replies")
-	ContextDto tweetEntityToContextDto(Tweet tweet);
+	ContextDto tweetEntityToContextDto(Tweet target, List<Tweet> before, List<Tweet> after);
 
 }
