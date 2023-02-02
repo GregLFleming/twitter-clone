@@ -209,6 +209,10 @@ public class TweetServiceImpl implements TweetService {
     }
     @Override
     public TweetResponseDto deleteTweetById(Long id, Credentials credentials){
+    	/**Deletes tweet with id = id.
+		 * Inputs: Long id
+		 * Output: Tweet
+		 */
         Optional<Tweet> tweet = tweetRepository.findById(id);
         //check to see if tweet exists.
         if(tweet.isEmpty()){
@@ -267,7 +271,7 @@ public class TweetServiceImpl implements TweetService {
 	@Override
 	public List<TweetResponseDto> getTweetReposts(Long id) {
 		/**Get all reposts of tweet with id = id.
-		 * Inputs: id
+		 * Inputs: Long id
 		 * Output: List<TweetResponseDto>
 		 */
 		Optional<Tweet> queryResult = tweetRepository.findById(id);
@@ -283,7 +287,7 @@ public class TweetServiceImpl implements TweetService {
 	@Override
 	public List<TweetResponseDto> getTweetReplies(Long id) {
 		/**Get all replies of tweet with id = id.
-		 * Inputs: id
+		 * Inputs: Long id
 		 * Output: List<TweetResponseDto>
 		 */
 		Optional<Tweet> queryResult = tweetRepository.findById(id);
@@ -299,7 +303,7 @@ public class TweetServiceImpl implements TweetService {
 	@Override
 	public ContextDto getTweetContext(Long id) {
 		/**Get context of tweet with id = id.
-		 * Inputs: id
+		 * Inputs: Long id
 		 * Output: ContextResponseDto
 		 */
 		Optional<Tweet> queryResult = tweetRepository.findById(id);
@@ -328,7 +332,7 @@ public class TweetServiceImpl implements TweetService {
 	@Override
 	public List<HashtagDto> getTweetTags(Long id) {
 		/**Get all Hashtags of tweet with id = id.
-		 * Inputs: id
+		 * Inputs: Long id
 		 * Output: List<hashtagDto>
 		 */
 		Optional<Tweet> queryResult = tweetRepository.findById(id);

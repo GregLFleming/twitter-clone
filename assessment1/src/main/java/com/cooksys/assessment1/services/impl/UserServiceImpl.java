@@ -48,6 +48,10 @@ public class UserServiceImpl implements UserService {
     private class TweetPostTimeComparator implements Comparator<Tweet> {
 		@Override
 		public int compare(Tweet tweet1, Tweet tweet2) {
+			/**Compares two tweets, reverse chronological order
+			 * Inputs: Tweet tweet1, Tweet tweet2
+			 * Output: Int
+			 */
 			long t1 = tweet1.getPosted().getTime();
 		    long t2 = tweet2.getPosted().getTime();
 		    if(t2 > t1)
@@ -82,7 +86,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto updateUsername(UserRequestDto userRequestDto, String username) {
-		
+		/**Updates the profile in the requestDto with the username supplied in the url
+		 * Inputs: UserRequestDto, username
+		 * Output: UserResponseDto
+		 */
 		//check for missing profile
 		if(userRequestDto.getProfile() == null) {
 			throw new BadRequestException("The request body must contain a profile");
@@ -119,7 +126,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void followUser(CredentialsDto credentialsRequestDto, String username) {
-		
+		/**Sets the user with credentials form the body to follow the user given in the url username.
+		 * Inputs: CredentialsDto, String username
+		 * Output: void
+		 */
 		//check if user to follow exists
 		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
 		if(queryResult.isEmpty()) {
@@ -160,7 +170,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void unfollowUser(CredentialsDto credentialsRequestDto, String username) {
-		
+		/**Sets the user with credentials from the body to unfollow the user given in the url username.
+		 * Inputs: CredentialsDto, String username
+		 * Output: void
+		 */
 		//check if user to unfollow exists
 		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
 		if(queryResult.isEmpty()) {
@@ -200,7 +213,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto getUser(String username) {
-		
+		/**Gets the user with username.
+		 * Inputs: String username
+		 * Output: UserResponseDto
+		 */
 		//check if user exists in db
 		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
 		if(queryResult.isEmpty()) {
