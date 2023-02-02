@@ -14,8 +14,8 @@ import com.cooksys.assessment1.entities.User;
 public interface UserMapper {
 	
 	List<UserResponseDto> entitiesToResponseDTOs(List<User> users);
-	
-	User userRequestDtoToEntity(UserRequestDto userRequestDto);
+
+		User userRequestDtoToEntity(UserRequestDto userRequestDto);
 	
 	@Mapping(target = "username", source = "credentials.username") //insert the value from credentials.username into the "username" field of response DTO
 	UserResponseDto entityToResponseDto(User user);
