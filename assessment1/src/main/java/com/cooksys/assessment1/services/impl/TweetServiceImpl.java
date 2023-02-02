@@ -64,7 +64,7 @@ public class TweetServiceImpl implements TweetService {
 
         for (String label : hashtagStrings) {
             Hashtag tag = new Hashtag();
-            label = label.toLowerCase();
+//            label = label.toLowerCase();
             tag.setLabel(label);
             Optional<Hashtag> check = hashtagRepository.findByLabel(label);
 
