@@ -36,4 +36,5 @@ public interface TweetService {
 
 	List<HashtagDto> getTweetTags(Long id);
 
+    TweetResponseDto replyTweetById(Long id, TweetRequestDto tweetRequestDto);
 }
