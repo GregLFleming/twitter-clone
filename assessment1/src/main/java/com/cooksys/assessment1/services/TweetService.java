@@ -5,4 +5,6 @@ import com.cooksys.assessment1.dtos.TweetResponseDto;
 
 public interface TweetService {
     TweetResponseDto createTweet(TweetRequestDto tweetRequestDto);
+    
+    TweetResponseDto replyTo(TweetRequestDto tweetRequestDto, Long id);
 }
