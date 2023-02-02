@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 		newCredentials.setUsername(username);
 		user.setCredentials(newCredentials);
 		
-//		//update profile
+		//update profile
 		Profile newProfile = userMapper.requestDtoToEntity(userRequestDto).getProfile();
 		
 		//validate and set newProfile
@@ -175,5 +175,18 @@ public class UserServiceImpl implements UserService {
 		userRepository.saveAndFlush(userToUnfollow);
 		
 		return;
+	}
+
+	@Override
+	public UserResponseDto getUser(String username) {
+		
+		//check if user exists in db
+		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(queryResult.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		User user = queryResult.get();
+		
+		return userMapper.entityToResponseDto(user);
 	}
 }

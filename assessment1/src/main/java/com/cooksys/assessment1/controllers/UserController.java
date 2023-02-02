@@ -45,4 +45,9 @@ public class UserController {
     public UserResponseDto updateUsername(@RequestBody UserRequestDto userRequestDto, @PathVariable String username) {
     	return userService.updateUsername(userRequestDto, username);
     }
+    
+    @GetMapping("/@{username}")
+    public UserResponseDto getUser(@PathVariable String username) {
+    	return userService.getUser(username);
+    	}
 }
