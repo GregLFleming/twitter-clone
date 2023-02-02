@@ -1,15 +1,25 @@
 package com.cooksys.assessment1.controllers;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cooksys.assessment1.dtos.ContextDto;
+import com.cooksys.assessment1.dtos.HashtagDto;
 import com.cooksys.assessment1.dtos.TweetRequestDto;
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.services.TweetService;
 import com.cooksys.assessment1.services.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
@@ -34,6 +44,26 @@ public class TweetController {
         return tweetService.getTweetLikesById(id);
     }
 
+    @GetMapping("/{id}/reposts")
+    public List<TweetResponseDto> getTweetReposts(@PathVariable(name="id") Long id){
+        return tweetService.getTweetReposts(id); 
+    }
+    
+    @GetMapping("/{id}/replies")
+    public List<TweetResponseDto> getTweetReplies(@PathVariable(name="id") Long id){
+        return tweetService.getTweetReplies(id); 
+    }
+    
+    @GetMapping("/{id}/context")
+    public ContextDto getTweetContext(@PathVariable(name="id") Long id){
+        return tweetService.getTweetContext(id); 
+    }
+    
+    @GetMapping("/{id}/tags")
+    public List<HashtagDto> getTweetTags(@PathVariable(name="id") Long id){
+        return tweetService.getTweetTags(id); 
+    }
+    
     @PostMapping("/{id}/like")
     public void likeTweetById(@PathVariable(name="id") Long id, @RequestBody Credentials credentials){
         tweetService.likeTweetById(id, credentials);
@@ -47,4 +77,14 @@ public class TweetController {
     @PostMapping("/{id}/reply")
     public TweetResponseDto replyTo(@RequestBody TweetRequestDto tweetRequestDto, @PathVariable Long id) {
     	return tweetService.replyTo(tweetRequestDto, id);
-    }}
+    }
+    @DeleteMapping("/{id}")
+    public TweetResponseDto deleteTweetById(@PathVariable(name="id") Long id,@RequestBody Credentials credentials){
+        return tweetService.deleteTweetById(id,credentials);
+    }
+    @PostMapping("{id}/repost")
+    public TweetResponseDto repostTweetById(@PathVariable(name="id") Long id,@RequestBody Credentials credentials){
+        return tweetService.repostTweetById(id, credentials);
+    }
+
+}
