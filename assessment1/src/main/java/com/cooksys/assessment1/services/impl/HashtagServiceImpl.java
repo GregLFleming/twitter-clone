@@ -48,7 +48,6 @@ public class HashtagServiceImpl implements HashtagService {
 
     @Override
     public List<TweetResponseDto> getTweetsByHashtag(String label) {
-        label = "#" + label;
         Optional<Hashtag> tag = hashtagRepository.findByLabel(label);
         if(tag.isEmpty())
             throw new BadRequestException("Hashtag " + label + " does not exist");
