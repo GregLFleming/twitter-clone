@@ -1,20 +1,28 @@
 package com.cooksys.assessment1.services.impl;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.cooksys.assessment1.dtos.CredentialsDto;
+import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserRequestDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.entities.Profile;
+import com.cooksys.assessment1.entities.Tweet;
 import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.BadRequestException;
 import com.cooksys.assessment1.exceptions.NotFoundException;
 import com.cooksys.assessment1.mappers.CredentialsMapper;
+import com.cooksys.assessment1.mappers.TweetMapper;
 import com.cooksys.assessment1.mappers.UserMapper;
+import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.repositories.UserRepository;
 import com.cooksys.assessment1.services.UserService;
 
@@ -27,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final CredentialsMapper credentialsMapper;
+    private final TweetRepository tweetRepository;
+    private final TweetMapper tweetMapper;
 
     private void validateUserRequest(UserRequestDto userRequestDto){
     	if(userRequestDto.getCredentials() == null || userRequestDto.getProfile() == null) {
@@ -37,6 +47,20 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
+    
+    private class TweetPostTimeComparator implements Comparator<Tweet> {
+		@Override
+		public int compare(Tweet tweet1, Tweet tweet2) {
+			long t1 = tweet1.getPosted().getTime();
+		    long t2 = tweet2.getPosted().getTime();
+		    if(t2 > t1)
+		            return -1;
+		    else if(t1 > t2)
+		            return 1;
+		    else
+		            return 0;
+		}
+    }
     
     @Override
 	public List<UserResponseDto> getUsers() {
@@ -84,7 +108,7 @@ public class UserServiceImpl implements UserService {
 		newCredentials.setUsername(username);
 		user.setCredentials(newCredentials);
 		
-//		//update profile
+		//update profile
 		Profile newProfile = userMapper.requestDtoToEntity(userRequestDto).getProfile();
 		
 		//validate and set newProfile
@@ -176,4 +200,104 @@ public class UserServiceImpl implements UserService {
 		
 		return;
 	}
+
+	@Override
+	public UserResponseDto getUser(String username) {
+		
+		//check if user exists in db
+		Optional<User> queryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(queryResult.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		User user = queryResult.get();
+		
+		return userMapper.entityToResponseDto(user);
+	}
+
+	@Override
+	public List<TweetResponseDto> getUserTweets(String username) {
+		/**Get a list of all of the tweets made by the user.
+		 * Input: String username
+		 * Output: List<TweetResponseDto>
+		 */
+		
+		//validate and get user from db
+		Optional<User> userQueryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(userQueryResult.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		User user = userQueryResult.get();
+		
+		return tweetMapper.entitiesToResponseDTOs(user.getTweets());
+	}
+	
+	@Override
+	public List<TweetResponseDto> getUserMentions(String username) {
+		/**Get a list of all of the tweets that mention the user.
+		 * Input: String username
+		 * Output: List<TweetResponseDto>
+		 */
+		
+		//validate and get user from db
+		Optional<User> userQueryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(userQueryResult.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		User user = userQueryResult.get();
+		
+		return tweetMapper.entitiesToResponseDTOs(user.getMentions());
+	}
+
+	@Override
+	public List<TweetResponseDto> getUserFeed(String username) {
+		/**Get a list of all of the tweets made by the user + user follows. Sort in reverse chronological order.
+		 * Input: String username
+		 * Output: List<TweetResponseDto>
+		 */
+		
+		//validate and get user from db
+		Optional<User> userQueryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(userQueryResult.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		User user = userQueryResult.get();
+		
+		List<User> userFollows = user.getFollowing();
+		
+		//Add user's tweets and user follows tweets to a list
+		List<Tweet> tweets = user.getTweets();
+		for(User follow : userFollows) {
+			tweets.addAll(follow.getTweets());
+		}
+		
+		//sort list
+		Collections.sort(tweets, new TweetPostTimeComparator());
+		
+		return tweetMapper.entitiesToResponseDTOs(tweets);
+	}
+
+	@Override
+	public UserResponseDto deleteUser(CredentialsDto credentials, String username) {
+		/**Delete the user while maintaining records.
+		 * Inputs: CredentialsDto credentials, String username
+		 * Output: UserReponseDto user
+		 */
+		
+		//validate and get user from db
+		Optional<User> userQueryResult = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(userQueryResult.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		User user = userQueryResult.get();
+		
+		//check credentials
+		if(user.getCredentials() != credentialsMapper.requestDtoEntity(credentials)) {
+			throw new BadRequestException("Your credentials do not match the profile you are trying to delete." ); 
+		}
+		
+		user.setDeleted(true);
+		
+		return userMapper.entityToResponseDto(user);
+	}
+
 }
