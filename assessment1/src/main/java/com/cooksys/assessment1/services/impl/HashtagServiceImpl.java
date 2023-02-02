@@ -33,6 +33,19 @@ public class HashtagServiceImpl implements HashtagService {
         return hashtagMapper.entitiesToDtos(hashtags);
     }
 
+//    @Override
+//    public boolean checkHashTagExist(String label){
+//        System.out.println("Label service " + label);
+//        List<Hashtag> hashtags = hashtagRepository.findAll();
+//        boolean labelExist=false;
+//        for(Hashtag hashtag : hashtags){
+//            if(hashtag.getLabel() == label) labelExist = true;
+//        }
+//
+//        return labelExist;
+//
+//    }
+
     @Override
     public List<TweetResponseDto> getTweetsByHashtag(String label) {
         label = "#" + label;
