@@ -168,12 +168,17 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto createTweet (TweetRequestDto tweetRequestDto){
+
+        if(tweetRequestDto.getCredentials() == null)
+            throw  new BadRequestException("No credentials");
+
         Tweet tweetToAdd = tweetMapper.requestDtoToEntity(tweetRequestDto);
         Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
         Optional<User> author = userRepository.findByCredentials(credentials);
 
         if(author.isEmpty())
             throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
+
 
         if(tweetRequestDto.getContent() == null)
             throw new BadRequestException("Missing tweet content");
