@@ -96,8 +96,6 @@ public class UserServiceImpl implements UserService {
 		return userMapper.entityToResponseDto(userRepository.saveAndFlush(user));
 	}
 	
-	
-
 	@Override
 	public void followUser(CredentialsDto credentialsRequestDto, String username) {
 		
