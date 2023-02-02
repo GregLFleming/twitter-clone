@@ -310,4 +310,14 @@ public class UserServiceImpl implements UserService {
 
 		return userMapper.entitiesToResponseDTOs(followers);
 	}
+
+	@Override
+	public List<UserResponseDto> getFollowing(String username){
+		Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+		if(user.isEmpty()) {
+			throw new NotFoundException("The username: " + username + " could not be found");
+		}
+		List<User> following = user.get().getFollowing().stream().filter(follow -> !follow.isDeleted()).collect(Collectors.toList());
+		return userMapper.entitiesToResponseDTOs(following);
+	}
 }

@@ -5,7 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 
+import com.cooksys.assessment1.entities.Hashtag;
+import com.cooksys.assessment1.repositories.HashtagRepository;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.assessment1.dtos.ContextDto;
@@ -49,6 +54,35 @@ public class TweetServiceImpl implements TweetService {
     private final UserMapper userMapper;
     private final HashTagMapper hashtagMapper;
 
+    private final HashtagRepository hashtagRepository;
+
+    private void setupHashtag(Tweet tweetToAdd) {
+        List<String> hashtagStrings = new ArrayList<>();
+        List<Hashtag> hashtags = new ArrayList<>();
+
+        String contentArray[] = tweetToAdd.getContent().split(" ");
+        for (String word : contentArray) {
+            if (word.charAt(0) == '#') {
+                hashtagStrings.add(word);
+            }
+        }
+
+        for (String label : hashtagStrings) {
+            Hashtag tag = new Hashtag();
+//            label = label.toLowerCase();
+            tag.setLabel(label);
+            Optional<Hashtag> check = hashtagRepository.findByLabel(label);
+
+            if (!check.isEmpty())
+                tag = check.get();
+
+            tag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
+            hashtagRepository.saveAndFlush(tag);
+            hashtags.add(tag);
+        }
+
+        tweetToAdd.setHashtags(hashtags);
+    }
 
     @Override
     public List<TweetResponseDto> getTweets(){
@@ -63,6 +97,33 @@ public class TweetServiceImpl implements TweetService {
             }
         });
         return tweetMapper.entitiesToResponseDTOs(tweetRepository.findAllByDeletedFalse());
+    }
+
+    private void setupMentions (Tweet tweetToAdd){
+
+        String contentArray[] = tweetToAdd.getContent().split(" ");
+        List<String> mentionsStrings = new ArrayList<>();
+
+        List<User> users = new ArrayList<>();
+
+        for (String word : contentArray) {
+            if (word.charAt(0) == '@')
+                mentionsStrings.add(word.substring(1));
+        }
+
+        for (String username : mentionsStrings) {
+            Optional<User> mention = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+            if (!mention.isEmpty())
+                users.add(mention.get());
+        }
+
+        for (User user : users) {
+            List<Tweet> mentions = user.getMentions();
+            mentions.add(tweetToAdd);
+            user.setMentions(mentions);
+            userRepository.saveAndFlush(user);
+        }
+
     }
 
     @Override
@@ -127,9 +188,9 @@ public class TweetServiceImpl implements TweetService {
 		System.out.println(reply);
 		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(reply));
 	}
-  
-  @Override
-    public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
+
+    @Override
+    public TweetResponseDto createTweet (TweetRequestDto tweetRequestDto){
         Tweet tweetToAdd = tweetMapper.requestDtoToEntity(tweetRequestDto);
         Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
         Optional<User> author = userRepository.findByCredentials(credentials);
@@ -138,8 +199,13 @@ public class TweetServiceImpl implements TweetService {
             throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
 
         tweetToAdd.setAuthor(author.get());
-        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToAdd));
 
+        setupHashtag(tweetToAdd);
+        tweetRepository.saveAndFlush(tweetToAdd);
+        setupMentions(tweetToAdd);
+
+
+        return tweetMapper.entityToDto(tweetToAdd);
     }
     @Override
     public TweetResponseDto deleteTweetById(Long id, Credentials credentials){
