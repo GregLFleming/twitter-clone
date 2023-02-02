@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 		
 		User user = userMapper.requestDtoToEntity(userRequestDto);
 		Optional<User> check = userRepository.findByCredentials(user.getCredentials());
-		if(!check.isEmpty())
+		if(!check.isEmpty() && !check.get().isDeleted())
 			throw new BadRequestException("User with this username already exists");
 
 		if(!check.isEmpty() && check.get().isDeleted()) {
