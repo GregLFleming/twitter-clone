@@ -132,7 +132,7 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweetToAdd = tweetMapper.requestDtoToEntity(tweetRequestDto);
         Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
         Optional<User> author = userRepository.findByCredentials(credentials);
-
+        
         if(author.isEmpty())
             throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
 
@@ -147,11 +147,17 @@ public class TweetServiceImpl implements TweetService {
         if(tweet.isEmpty()){
             throw new NotFoundException("There is no tweet with id " + id);
         }
-//        check to see if user creditentials exist
+//      check to see if user creditentials exist
         Optional<User> user = userRepository.findByCredentials(credentials);
-        if (user.isEmpty() || tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername()) ) {
-            throw new NotFoundException("There is no user with  " + credentials.getUsername());
+        if (user.isEmpty()){
+            throw new NotFoundException("There is no user with username " + credentials.getUsername());
         }
+        
+        //check if credentials match those of the tweet
+        if(!tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername())){
+        	throw new BadRequestException("Supplied credentials do not match the tweet");
+        }
+        
         tweet.get().setDeleted(true);
         tweetRepository.saveAndFlush(tweet.get());
         return tweetMapper.entityToDto(tweet.get());
