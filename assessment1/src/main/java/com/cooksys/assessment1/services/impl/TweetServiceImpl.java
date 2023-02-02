@@ -1,5 +1,6 @@
 package com.cooksys.assessment1.services.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -240,10 +241,22 @@ public class TweetServiceImpl implements TweetService {
         if(queryResult.isEmpty()){
             throw new NotFoundException("There is no tweet with id " + id);
         }
-        
         Tweet tweet = queryResult.get();
         
-		return tweetMapper.tweetEntityToContextDto(tweet);
+        //Assign values for target and after
+        Tweet target = tweet.getInReplyTo();
+        List<Tweet> after = tweet.getReplies();
+        
+        
+        //find all tweets before
+        List<Tweet> before = new ArrayList<>();
+        Tweet curTweet = tweet.getInReplyTo();
+        while(curTweet != null) {
+        	before.add(curTweet);
+        	curTweet = curTweet.getInReplyTo();
+        }
+        
+		return tweetMapper.tweetEntityToContextDto(target, before, after);
 	}
 
 	@Override
