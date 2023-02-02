@@ -39,24 +39,5 @@ public class Seeder implements CommandLineRunner {
         userRepository.saveAndFlush(user1);
         tweetRepository.saveAndFlush(tweet1);
 
-        User user2 = new User();
-        Credentials credentials2 = new Credentials();
-        credentials2.setUsername("test2");
-        credentials2.setPassword("password");
-        user2.setCredentials(credentials2);
-        Profile profile2 = new Profile();
-        profile2.setEmail("test2@test.com");
-        profile2.setPhone("9999999999");
-        profile2.setFirstName("Luis");
-        profile2.setLastName("Del Mar");
-        user2.setProfile(profile2);
-
-        Tweet tweet2 = new Tweet();
-        tweet2.setAuthor(user2);
-        tweet2.setContent("Test string");
-
-        userRepository.saveAndFlush(user2);
-        tweetRepository.saveAndFlush(tweet2);
-
     }
 }

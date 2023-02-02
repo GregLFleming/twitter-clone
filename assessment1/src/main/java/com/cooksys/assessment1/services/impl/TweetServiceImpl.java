@@ -2,12 +2,14 @@ package com.cooksys.assessment1.services.impl;
 
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
+import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.entities.Tweet;
 import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.NotFoundException;
 import com.cooksys.assessment1.mappers.TweetMapper;
 import com.cooksys.assessment1.mappers.UserMapper;
 import com.cooksys.assessment1.repositories.TweetRepository;
+import com.cooksys.assessment1.repositories.UserRepository;
 import com.cooksys.assessment1.services.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class TweetServiceImpl implements TweetService {
     private  final TweetRepository tweetRepository;
     private final TweetMapper tweetMapper;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
+
 
     @Override
     public List<TweetResponseDto> getTweets(){
@@ -58,5 +62,25 @@ public class TweetServiceImpl implements TweetService {
         }
         List<User> users = tweet.get().getLikedBy();
         return userMapper.entitiesToResponseDTOs(users);
+    }
+
+    @Override
+    public void likeTweetById(Long id, Credentials credentials){
+        Optional<Tweet> tweet = tweetRepository.findById(id);
+        if(tweet.isEmpty() || !tweet.get().isDeleted()){
+            throw new NotFoundException("Process finished with exit code 0e is no tweet with id " + id);
+        }
+        Optional<User> user = userRepository.findByCredentials(credentials);
+       if(user.isEmpty()){
+           throw new NotFoundException("There is no user with  " + credentials.getUsername());
+       }
+       List<User> users = tweet.get().getLikedBy();
+       users.add(user.get());
+       tweet.get().setLikedBy(users);
+        tweetRepository.saveAndFlush(tweet.get());
+        List<Tweet> tweets = user.get().getLikedTweets();
+        tweets.add(tweet.get());
+        user.get().setLikedTweets(tweets);
+        userRepository.saveAndFlush(user.get());
     }
 }
