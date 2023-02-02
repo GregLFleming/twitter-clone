@@ -6,8 +6,10 @@ import com.cooksys.assessment1.entities.Credentials;
 import com.cooksys.assessment1.entities.Tweet;
 import com.cooksys.assessment1.entities.User;
 import com.cooksys.assessment1.exceptions.NotFoundException;
+import com.cooksys.assessment1.exceptions.BadRequestException;
 import com.cooksys.assessment1.mappers.CredentialsMapper;
 import com.cooksys.assessment1.mappers.TweetMapper;
+import com.cooksys.assessment1.mappers.UserMapper;
 import com.cooksys.assessment1.repositories.TweetRepository;
 import com.cooksys.assessment1.repositories.UserRepository;
 import com.cooksys.assessment1.services.TweetService;
@@ -17,6 +19,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
@@ -25,6 +29,7 @@ public class TweetServiceImpl implements TweetService {
     private final TweetMapper tweetMapper;
     private final UserRepository userRepository;
     private final CredentialsMapper credentialsMapper;
+    private final UserMapper userMapper;
 	@Override
 	public TweetResponseDto replyTo(TweetRequestDto tweetRequestDto, Long id) {
 		
@@ -48,5 +53,17 @@ public class TweetServiceImpl implements TweetService {
 		System.out.println(reply);
 		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(reply));
 	}
+  
+  @Override
+    public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
+        Tweet tweetToAdd = tweetMapper.requestDtoToEntity(tweetRequestDto);
+        Credentials credentials = credentialsMapper.requestDtoEntity(tweetRequestDto.getCredentials());
+        Optional<User> author = userRepository.findByCredentials(credentials);
 
+        if(author.isEmpty())
+            throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
+
+        tweetToAdd.setAuthor(author.get());
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToAdd));
+    }
 }

@@ -2,13 +2,9 @@ package com.cooksys.assessment1.controllers;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import com.cooksys.assessment1.dtos.UserRequestDto;
+import org.springframework.web.bind.annotation.*;
 
 import com.cooksys.assessment1.dtos.CredentialsDto;
 import com.cooksys.assessment1.dtos.UserRequestDto;
@@ -28,6 +24,11 @@ public class UserController {
     @GetMapping
     public List<UserResponseDto> getUsers(){
     	return userService.getUsers();
+    }
+
+    @PostMapping
+    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto){
+        return userService.createUser(userRequestDto);
     }
     
     @PostMapping("/@{username}/follow")

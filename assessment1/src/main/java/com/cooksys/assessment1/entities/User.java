@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Where(clause = "deleted=false")
 @Table(name="user_table")
 public class User {
 	
