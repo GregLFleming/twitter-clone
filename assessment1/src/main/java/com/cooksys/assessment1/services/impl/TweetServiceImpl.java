@@ -230,15 +230,19 @@ public class TweetServiceImpl implements TweetService {
         }
         Optional<User> user = userRepository.findByCredentials(credentials);
 
-        if(user.isEmpty() || tweet.get().getAuthor().getCredentials().getUsername().equals(credentials.getUsername()))
+        if(user.isEmpty() || user.get().isDeleted())
             throw new BadRequestException("User with username: " + credentials.getUsername() + " does not exist");
         System.out.println("tweet "+ tweet.get().isDeleted());
         System.out.println("user "+ user.isEmpty());
+
         Tweet tweetToRepost = tweet.get();
         User userReposting = user.get();
-        Tweet repost = tweetToRepost;
-        repost.setRepostOf(repost);
+
+        Tweet repost = new Tweet();
         repost.setAuthor(userReposting);
+        repost.setRepostOf(tweetToRepost);
+
+
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
     }
 
