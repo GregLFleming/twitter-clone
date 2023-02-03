@@ -304,7 +304,6 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweet = queryResult.get();
         
         //Assign values for target and after
-        Tweet target = tweet.getInReplyTo();
         List<Tweet> after = tweet.getReplies();
         
         
@@ -316,7 +315,7 @@ public class TweetServiceImpl implements TweetService {
         	curTweet = curTweet.getInReplyTo();
         }
         
-		return tweetMapper.tweetEntityToContextDto(target, before, after);
+		return tweetMapper.tweetEntityToContextDto(tweet, before, after);
 	}
 
 	@Override
