@@ -135,11 +135,14 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<UserResponseDto> getTweetLikesById(Long id){
         Optional<Tweet> tweet = tweetRepository.findById(id);
-        if(tweet.isEmpty() || !tweet.get().isDeleted()){
+        if(tweet.isEmpty() || tweet.get().isDeleted()){
             throw new NotFoundException("There is no tweet with id " + id);
         }
         List<User> users = tweet.get().getLikedBy();
-        return userMapper.entitiesToResponseDTOs(users);
+        Set<User> setUsers = new HashSet<>(users);
+
+
+        return userMapper.entitiesToResponseDTOs(new ArrayList<>(setUsers));
     }
 
     @Override
