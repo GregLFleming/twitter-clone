@@ -1,23 +1,14 @@
 package com.cooksys.assessment1.controllers;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cooksys.assessment1.dtos.CredentialsDto;
 import com.cooksys.assessment1.dtos.TweetResponseDto;
 import com.cooksys.assessment1.dtos.UserRequestDto;
 import com.cooksys.assessment1.dtos.UserResponseDto;
 import com.cooksys.assessment1.services.UserService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -75,4 +66,14 @@ public class UserController {
     public UserResponseDto deleteUser(@RequestBody CredentialsDto credentials, @PathVariable String username) {
     	return userService.deleteUser(credentials, username);
     	}
+
+    @GetMapping("/@{username}/followers")
+    public List<UserResponseDto> getFollowers(@PathVariable String username){
+        return userService.getFollowers(username);
+    }
+
+    @GetMapping("/@{username}/following")
+    public List<UserResponseDto> getFollowing(@PathVariable String username){
+        return userService.getFollowing(username);
+    }
 }
