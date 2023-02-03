@@ -31,9 +31,9 @@ public class ValidateServiceImpl implements ValidateService {
     public boolean checkHashTagExist(String label){
         List<Hashtag> hashtags = hashtagRepository.findAll();
         boolean labelExist=false;
-        System.out.println(hashtags.size());
         for(Hashtag hashtag : hashtags){
-            if(hashtag.getLabel() == label) labelExist = true;
+            if(hashtag.getLabel().equals(label))
+                labelExist = true;
         }
         return labelExist;
     }
